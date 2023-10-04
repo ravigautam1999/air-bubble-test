@@ -13,8 +13,9 @@
                 class="rounded-xl"
                 height="400"
                 show-arrows-on-hover
-                hide-delimiters
+                :hide-delimiters="false"
                 :continuous="false"
+                hide-delimiter-background
               >
                 <v-carousel-item
                   v-for="(item, i) in listData.colls"
@@ -28,20 +29,17 @@
                       <v-btn
                         icon
                         fab
-                        @click='
+                        @click.prevent='
                           () => {
                             listData.likeProperty = !listData.likeProperty;
                             if (listData.likeProperty === true) {
                               listData.closeSnackBar = true;
                             }
-                          }
-                        '
+                          }'
                       >
                         <v-icon
                           large
-                          :color="
-                            listData.likeProperty === true ? 'red' : 'black'
-                          "
+                          :color="listData.likeProperty === true ? 'red' : 'black'"
                           style="text-shadow: 0px 0px 10px rgb(255, 255, 255)"
                           >mdi-heart
                         </v-icon>
@@ -49,6 +47,21 @@
                     </div>
                   </template>
                 </v-carousel-item>
+                <template v-slot:prev="{attrs, on}">
+                <v-btn class="white" icon fab small v-bind="attrs" v-on.prevent="on" @click.prevent>
+                  <v-icon color="red">
+                    mdi-chevron-left
+                  </v-icon>
+                </v-btn>
+                </template>
+                
+                <template v-slot:next="{attrs, on}">
+                <v-btn  class="white" icon fab small v-bind="attrs" v-on="on" @click.prevent>
+                  <v-icon color="red">
+                    mdi-chevron-right
+                  </v-icon>
+                </v-btn>
+                </template>
               </v-carousel>
             </v-card-title>
             <v-card-subtitle>
@@ -84,31 +97,9 @@
               >
             </v-row>
           </v-snackbar>
-        
         </v-container>
       </v-col>
     </v-row>
-    <v-row justify="center">
-        <v-btn
-          color="success"
-          class="mt-12"
-          @click="overlay = !overlay"
-        >
-          Show Overlay
-        </v-btn>
-
-        <v-overlay
-          :absolute="absolute"
-          :value="overlay"
-        >
-          <v-btn
-            color="success"
-            @click="overlay = false"
-          >
-            Hide Overlay
-          </v-btn>
-        </v-overlay>
-      </v-row>
   </v-sheet>
 </template>
 
@@ -120,9 +111,6 @@ const likePropertyColor = ref("black");
 const likeProperty = ref(false);
 const closeSnackBar = ref(false);
 const progressTimeout = ref(6);
-
-const absolute =ref( true)
-const overlay =ref(false)
 
 const dataCollecttion = ref([
   {
@@ -338,4 +326,34 @@ const onScroll = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+::v-deep .v-carousel__controls__item.v-btn.v-btn--icon {
+    background-color: #ebece9; 
+    /* Background color of non-active ones */
+    height: 8px; 
+    /* Height you want */
+    width: 8px; 
+    /* Width you want */
+    border-radius: 30px; 
+    /* Remove default border radius */
+}
+  
+::v-deep .v-carousel__controls__item.v-btn.v-btn--icon.v-btn--active {
+    background-color: red; 
+    /* Colour for active one */
+}
+
+::v-deep .v-carousel__controls__item.v-btn.v-btn--icon:hover {
+    background-color: black; 
+    /* You might also want to customise the hover effect */
+}
+
+::v-deep .v-btn__content .v-icon {
+     /* Removes the default icon */
+
+}
+
+::v-deep .v-carousel__controls__item .v-btn__content i {
+  font-size: 8px !important;
+}
+</style>
